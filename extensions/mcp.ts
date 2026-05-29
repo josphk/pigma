@@ -60,7 +60,7 @@ async function initializeSession(signal?: AbortSignal): Promise<boolean> {
 			{
 				protocolVersion: "2024-11-05",
 				capabilities: {},
-				clientInfo: { name: "pi-figma-mcp", version: "2.0" },
+				clientInfo: { name: "pigma-mcp", version: "2.0" },
 			},
 			signal
 		);
@@ -295,7 +295,7 @@ export function registerFigmaMcp(pi: ExtensionAPI) {
 		})();
 	});
 
-	pi.registerCommand("figma-mcp", {
+	pi.registerCommand("pigma-mcp", {
 		description: "Show Figma MCP server connection status and available tools",
 		handler: async (_args, ctx) => {
 			if (!connected) {

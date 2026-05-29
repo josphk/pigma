@@ -1,6 +1,6 @@
 ## Figma labor
 
-- Live connection to Figma via the figma-labor bridge (Plugin API)
+- Live connection to Figma via the pigma bridge (Plugin API)
 - Plugin: {{plugin_status}}
 - Figma MCP tools: {{mcp_status}}
 
@@ -111,7 +111,7 @@ frame.counterAxisSpacing = 8;
 | `findAll` on full page is slow                | Large-page scans are expensive                                              | Scope searches to a section or frame                                    |
 | Per-node paint construction is slow           | Rebuilding paints in a loop is expensive                                    | Precompute paint objects and reuse them                                 |
 | Compound instance IDs (`id;id`)               | Patched bridge handles them                                                 | No workaround needed                                                    |
-| Effect validation mismatch                    | The figma-labor validator may reject `effects[].blendMode`                  | Omit `blendMode` from effect objects passed to `node.effects`           |
+| Effect validation mismatch                    | The pigma validator may reject `effects[].blendMode`                        | Omit `blendMode` from effect objects passed to `node.effects`           |
 
 ## Variable-bound fills
 

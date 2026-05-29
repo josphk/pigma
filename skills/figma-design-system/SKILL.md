@@ -603,7 +603,7 @@ return "paint style applied";
 
 ## Effect styles
 
-- Current figma-labor validator may reject `effects[].blendMode`
+- Current pigma validator may reject `effects[].blendMode`
 - Workaround: omit `blendMode` from effect objects even if official Figma docs show it
 
 ### Create an effect style

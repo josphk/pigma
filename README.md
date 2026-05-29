@@ -1,6 +1,6 @@
 > Made @ Shopify
 
-# pi-figma-labor
+# pigma
 
 Connects [pi-coding-agent](https://github.com/badlogic/pi-mono) to Figma.
 
@@ -20,13 +20,13 @@ Connects [pi-coding-agent](https://github.com/badlogic/pi-mono) to Figma.
 ## Install
 
 ```
-pi install https://github.com/mkaralevich/pi-figma-labor
+pi install https://github.com/josphk/pigma
 ```
 
 ## Use
 
 - Bridge auto-starts when pi launches
-- Open *Pi Labor* plugin in Design Mode ([Shopify](https://www.figma.com/community/plugin/1611556075783258900/figma-labor) | Public TBD)
+- Open *Pigma* plugin in Design Mode ([Shopify](https://www.figma.com/community/plugin/1611556075783258900/pigma) | Public TBD)
 - Ask your `pi` to do things
 
 Extension includes **Desktop Figma MCP**. To enable:
@@ -46,9 +46,9 @@ FIGMA_MCP_PORT=3845 pi
 
 | Command              | Description                                           |
 | -------------------- | ----------------------------------------------------- |
-| `/figma-labor-start` | Start bridge server manually                          |
-| `/figma-labor-stop`  | Stop bridge server manually                           |
-| `/figma-labor`       | Show bridge status and Figma plugin connection status |
+| `/pigma-start` | Start bridge server manually                          |
+| `/pigma-stop`  | Stop bridge server manually                           |
+| `/pigma`       | Show bridge status and Figma plugin connection status |
 | `/figma-mcp`         | Show Figma MCP server status and list available tools |
 
 ## MCP ↔ Labor

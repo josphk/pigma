@@ -1,12 +1,12 @@
 /**
- * figma-labor extension for pi
+ * pigma extension for pi
  *
- * Registers write (and read) tools that talk to the figma-labor bridge server,
+ * Registers write (and read) tools that talk to the pigma bridge server,
  * which relays commands to the Figma plugin via WebSocket → Plugin API.
  *
  * Requires:
- *   1. Bridge server running at http://127.0.0.1:3846  (start with /figma-labor-start)
- *   2. figma-labor plugin open inside Figma desktop app
+ *   1. Bridge server running at http://127.0.0.1:3846  (start with /pigma-start)
+ *   2. pigma plugin open inside Figma desktop app
  *
  * Tools registered:
  *   labor_get_selection       Get currently selected nodes
@@ -81,7 +81,7 @@ function updateFooterStatus(ctx: {
 }): boolean {
 	const bridgeConnected = cachedStatus?.plugin === "connected";
 	try {
-		ctx.ui.setStatus("labor", `labor ${footerSymbol(bridgeConnected, mcpConnected)}`);
+		ctx.ui.setStatus("pigma", `🐽 pigma ${footerSymbol(bridgeConnected, mcpConnected)}`);
 		return true;
 	} catch (error) {
 		if (isStaleSessionContextError(error)) return false;
@@ -148,7 +148,7 @@ async function startBridge(signal?: AbortSignal): Promise<boolean> {
 
 	let spawnFailed = false;
 	bridgeProc.on("error", (err) => {
-		console.error("[figma-labor] Bridge process error:", err.message);
+		console.error("[pigma] Bridge process error:", err.message);
 		spawnFailed = true;
 	});
 
@@ -194,7 +194,7 @@ async function runTool(
 			content: [
 				{
 					type: "text" as const,
-					text: "figma-labor bridge is not running. Start pi fresh or run the bridge manually: cd ~/Git/figma-labor/bridge && npm start",
+					text: "pigma bridge is not running. Start it with /pigma-start.",
 				},
 			],
 			isError: true,
@@ -206,7 +206,7 @@ async function runTool(
 			content: [
 				{
 					type: "text" as const,
-					text: "Figma plugin is not connected. Open the figma-labor plugin in Figma (Menu → Plugins → Development → figma-labor).",
+					text: "Figma plugin is not connected. Open the pigma plugin in Figma (Menu → Plugins → Development → pigma).",
 				},
 			],
 			isError: true,
@@ -217,10 +217,10 @@ async function runTool(
 	try {
 		const result = await bridgeCommand(command, params, opts);
 		const errorMessage =
-			typeof result === "string" && result.startsWith("figma-labor error:")
+			typeof result === "string" && result.startsWith("pigma error:")
 				? result
 				: result && typeof result === "object" && "error" in result && typeof result.error === "string"
-					? `figma-labor error: ${result.error}`
+					? `pigma error: ${result.error}`
 					: null;
 		if (errorMessage) {
 			return {
@@ -234,7 +234,7 @@ async function runTool(
 	} catch (err) {
 		const msg = err instanceof Error ? err.message : String(err);
 		return {
-			content: [{ type: "text" as const, text: `figma-labor error: ${msg}` }],
+			content: [{ type: "text" as const, text: `pigma error: ${msg}` }],
 			isError: true,
 		};
 	}
@@ -292,7 +292,7 @@ async function initializeMcpSession(signal?: AbortSignal): Promise<boolean> {
 			{
 				protocolVersion: "2024-11-05",
 				capabilities: {},
-				clientInfo: { name: "pi-figma-labor", version: "2.0" },
+				clientInfo: { name: "pigma", version: "2.0" },
 			},
 			signal
 		);
@@ -561,7 +561,7 @@ function registerFigmaMcp(pi: ExtensionAPI) {
 		mcpSessionRun++;
 	});
 
-	pi.registerCommand("figma-mcp", {
+	pi.registerCommand("pigma-mcp", {
 		description: "Show Figma MCP server connection status and available tools",
 		handler: async (_args, ctx) => {
 			if (!mcpConnected) {
@@ -671,24 +671,24 @@ export default function (pi: ExtensionAPI) {
 
 	// Slash commands
 
-	pi.registerCommand("figma-labor-start", {
-		description: "Start the figma-labor bridge server",
+	pi.registerCommand("pigma-start", {
+		description: "Start the pigma bridge server",
 		handler: async (_args, ctx) => {
 			const already = await bridgeStatus();
 			if (already) {
 				cachedStatus = already;
 				updateFooterStatus(ctx);
-				ctx.ui.notify(`figma-labor bridge is already running.\nPlugin: ${already.plugin}`, "info");
+				ctx.ui.notify(`pigma bridge is already running.\nPlugin: ${already.plugin}`, "info");
 				startPolling(ctx, bridgeSessionRun, currentBridgeSessionSignal());
 				return;
 			}
-			ctx.ui.notify("Starting figma-labor bridge...", "info");
+			ctx.ui.notify("Starting pigma bridge...", "info");
 			const ok = await startBridge(currentBridgeSessionSignal());
 			if (!ok) {
 				cachedStatus = null;
 				updateFooterStatus(ctx);
 				ctx.ui.notify(
-					"Failed to start figma-labor bridge.\n\nMake sure bridge.js exists at:\n" + BRIDGE_BIN,
+					"Failed to start pigma bridge.\n\nMake sure bridge.js exists at:\n" + BRIDGE_BIN,
 					"error"
 				);
 				return;
@@ -697,37 +697,37 @@ export default function (pi: ExtensionAPI) {
 			cachedStatus = status;
 			updateFooterStatus(ctx);
 			ctx.ui.notify(
-				`figma-labor bridge started.\nPlugin: ${status?.plugin ?? "disconnected"}`,
+				`pigma bridge started.\nPlugin: ${status?.plugin ?? "disconnected"}`,
 				"success"
 			);
 			startPolling(ctx, bridgeSessionRun, currentBridgeSessionSignal());
 		},
 	});
 
-	pi.registerCommand("figma-labor-stop", {
-		description: "Stop the figma-labor bridge server",
+	pi.registerCommand("pigma-stop", {
+		description: "Stop the pigma bridge server",
 		handler: async (_args, ctx) => {
 			stopPolling();
 			stopBridge();
 			cachedStatus = null;
 			updateFooterStatus(ctx);
-			ctx.ui.notify("figma-labor bridge stopped.", "info");
+			ctx.ui.notify("pigma bridge stopped.", "info");
 		},
 	});
 
-	pi.registerCommand("figma-labor", {
+	pi.registerCommand("pigma", {
 		description: "Show Figma bridge server connection status",
 		handler: async (_args, ctx) => {
 			const status = await bridgeStatus();
 			if (!status) {
 				ctx.ui.notify(
-					"figma-labor bridge is not running.\n\nRun /figma-labor-start to launch it.",
+					"pigma bridge is not running.\n\nRun /pigma-start to launch it.",
 					"error"
 				);
 				return;
 			}
 			ctx.ui.notify(
-				`figma-labor bridge: ${status.bridge}\nFigma plugin: ${status.plugin}`,
+				`pigma bridge: ${status.bridge}\nFigma plugin: ${status.plugin}`,
 				status.plugin === "connected" ? "success" : "info"
 			);
 		},
